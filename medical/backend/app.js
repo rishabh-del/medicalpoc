@@ -76,7 +76,7 @@ app.post('/downloadReport', async (req, res) => {
    fs.appendFile(file_name, req.body.file, (err) => {
       if (err) throw err;
 
-      var file = os.homedir() + '/' + 'medicalpoc/medical/backend' + '/' + file_name;
+      var file = os.homedir() + '/' + 'Blockchain/medicalpoc/medical/backend' + '/' + file_name;
       console.log(file);
       res.download(file);
    });
