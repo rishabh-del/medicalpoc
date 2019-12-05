@@ -1,0 +1,36 @@
+9wfNJx2jCAHE6tF6iYVu token
+
+mghRCA2n8UdcmNJ mongo
+
+
+mongodb+srv://medicalBlock:medPass@cluster0-qq1fv.mongodb.net/test
+
+
+steps to add org 
+
+1. generateCerts
+2. generateChannelArtifacts
+3. Fetch the config for the channel
+4. Modify the configuration to append the new org
+5. Compute a config update
+6. Set the peerOrg admin of an org and signing the config update
+7. peer channel update
+8. start org3 services (docker containers)
+9. Fetch channel config block from orderer
+10.Join channel all the peers individually
+11.Install new chaincode version on all the orgs
+12.Upgrade chaincode
+
+
+#here script for extra org will be added
+docker exec \
+  -e CORE_PEER_LOCALMSPID=org4MSP \
+  -e CORE_PEER_ADDRESS=peer0.org4.example.com:11051 \
+  -e CORE_PEER_MSPCONFIGPATH=${org4_MSPCONFIGPATH} \
+  -e CORE_PEER_TLS_ROOTCERT_FILE=${org4_TLS_ROOTCERT_FILE} \
+  org4cli \
+  peer chaincode install \
+    -n medical \
+    -v $chaincodeVersion \
+    -p "$CC_SRC_PATH" \
+    -l "$CC_RUNTIME_LANGUAGE"

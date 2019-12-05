@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    * {
+        box-sizing: border-box
+    }
+</style>
+
+<body>
+    <!-- <h1 style="width: 365px; margin-right: auto; margin-left: auto; position: relative;
+    bottom: 28px;">Available Prescriptions</h1>
+    <p style="width: 305px; margin-right: auto; margin-left: auto; position: relative;
+    bottom: 28px;">Fetch Current or Patient's all prescription.</p>
+    <hr> -->
+    <h4  style="width: 210px; margin-right: auto; margin-left: auto;">
+            <div class="tab">
+              <a href="#!history" style="color: green;" ng-class="getClass('/history')"><button>
+                  <span>Report</span></button></a>
+              <a href="#!landing" style="color: green;" ng-show="prescript"
+                ng-class="getClass('/landing')"><button><span>Prescription</span></button></a>
+            </div>
+          </h4>
+    <p id="demo"></p>
+    
+    <!-- <input id="patientKey">Enter Patient Key</input> -->
+    <div style="width: 260px; margin-right: auto; margin-left: auto;" >
+    <label for="patientKey"><b>Patient ID : </b></label>
+
+    <input type="text" placeholder="Enter Patient ID" ng-model="patient.patientKey" name="patientKey" style="width: 140px;">
+    </div>
+    <div class="patient" style="width: 335px; margin-right: auto; margin-left: auto;" >
+            <!-- <button type="button" class="cancelbtn">Cancel</button> -->
+            <button type="submit" class="patientInput" ng-click="currentHistory(patient)" style="width: 165px">Get Current Record</button>
+            <button type="submit" class="patientAllInput" ng-click="allHistory(patient)" style="width: 165px;">Get Record History</button>
+          </div>
+    <form id="usrform" style="border:1px solid #ccc; width: 300px; margin-right: auto; margin-left: auto;">
+          
+        
+        <div class="container">
+
+
+            <label for="name"><b>Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </b></label>
+            <label for="name"><b>{{userDetail.name}}</b></label>
+
+            </br>
+            </br>
+            <label for="age"><b>Age&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </b></label>
+            <label for="age"><b>{{userDetail.age}}</b></label>
+            </br>
+            </br>
+            <label for="gender"><b>Gender&nbsp;&nbsp;&nbsp;&nbsp;: </b></label>
+            <label for="gender"><b>{{userDetail.gender}}</b></label>
+            </br>
+            </br>
+            <label for="medicine"><b>Medicine&nbsp;&nbsp;: </b></label>
+            <label for="medicine"><b>{{userDetail.medicine}}</b></label>
+            </br>
+            </br>
+
+            <label for="file"><b>File&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;      : </b></label>
+            <a href="" ng-click="downloadFile()"><button style="width: auto;">Download Report</button>
+               
+              </a>
+              <!-- <embed src="files/Brochure.pdf" type="application/pdf" width="100%" height="600px" /> -->
+            <!-- <label for="file"><b>{{userDetail.file}}</b></label> -->
+            <!-- <img data-ng-src="data:image/png;base64,{{userDetail.file}}" ng-model="updatedPhoto" /> -->
+
+
+            <!-- <div class="clearfix">
+               <button type="button" class="cancelbtn">Cancel</button> 
+                <button type="submit" class="signupbtn" ng-click="prescription(user)">Submit</button>
+            </div> -->
+        </div>
+    </form>
+
+</body>
+
+</html>

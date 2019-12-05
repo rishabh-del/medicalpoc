@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  * {
+    box-sizing: border-box
+  }
+
+</style>
+
+<body>
+
+  
+        <!-- <h1 style="width: 325px; margin-right: auto; margin-left: auto; position: relative;
+        bottom: 28px;">Patient Prescription</h1>
+        <p style="width: 305px; margin-right: auto; margin-left: auto; position: relative;
+        bottom: 28px;">Please fill or upload the patient's prescription.</p>
+        <hr> -->
+        <h4  style="width: 210px; margin-right: auto; margin-left: auto;">
+            <div class="tab">
+              <a href="#!history" style="color: green;" ng-class="getClass('/history')"><button>
+                  <span>Report</span></button></a>
+              <a href="#!landing" style="color: green;" 
+                ng-class="getClass('/landing')"><button><span>Prescription</span></button></a>
+            </div>
+          </h4>
+        <p id="demo"></p>
+        <div class="loader" ng-if="loader == true"></div>
+        <div class="loadComment" ng-if="loader == true">Commiting Record...</div>
+
+  <form id="usrform"  style="border:1px solid #ccc; width: 300px; margin-right: auto; margin-left: auto;">
+    <div class="container">
+     
+
+        <label for="patientKey"><b>Patient ID</b></label>
+        <input type="text" placeholder="Enter Patient Id" ng-model="user.patientKey" name="patientKey" required>
+  
+
+      <label for="name"><b>Name</b></label>
+      <input type="text" placeholder="Enter Name" ng-model="user.name" name="name" required>
+
+      <label for="age"><b>Age</b></label>
+      <input type="text" placeholder="Enter Age" ng-model="user.age" name="age" required>
+
+      <label for="gender"><b>Gender</b></label></br>
+      <select ng-model="user.gender" name="gender" required>
+            <option value="">Select Gender</option>
+          
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select> </br></br>
+          <label for="file"><b>Upload File</b></label>
+          <input type="file" id="prescriptionFile" fileread="user.file" name="file"><br><br>
+      <label for="name"><b>Medicine</b></label>
+  
+      <!-- <a href="#" id="filldetails" ng-click="addFields()">Add New Medicine</a>
+          <div id="container"/> -->
+          <textarea rows="4" cols="50" name="medicine" placeholder="Add Medicine..." ng-model="user.medicine" form="usrform" style="width: 218px;" required>
+                </textarea>
+
+      <div class="clearfix">
+        <!-- <button type="button" class="cancelbtn">Cancel</button> -->
+        <button type="submit" class="signupbtn" ng-click="prescription(user)">Submit</button>
+      </div>
+    </div>
+  </form>
+
+</body>
+
+</html>

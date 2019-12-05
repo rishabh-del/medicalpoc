@@ -1,0 +1,50 @@
+<html><head><link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon.png">
+	<title>Blockchain</title>
+	<link href="../assets/plugins/bootstrap/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+	<link href="../css/login.css" type="text/css" rel="stylesheet">
+	</head>
+<body >	
+	
+	<!-- start: LOGIN -->
+			<div class="main-login">				
+				<!-- start: LOGIN BOX -->
+				<div class="box-login">
+					<form class="form-login">
+						<div class="logo clearfix">
+							<img src="../assets/images/writer-information.png" alt="WIMS"/>
+						</div>
+						<fieldset>
+							<legend>
+								Sign in to your account
+							</legend>
+							<div class="form-group">
+								<span class="input-icon">
+									<input type="text" class="form-control" name="username" ng-model="user.email" placeholder="Username">
+									<i class="ti-user"></i> </span>
+							</div>					
+
+							<div class="form-group">
+								<span class="input-icon">
+									<input type="password" class="form-control password" name="password" ng-model="user.password" placeholder="Password">
+									<i class="ti-lock"></i>
+									<a class="forgot" href="#">
+										I forgot my password
+									</a> </span>
+							</div>
+								
+							
+							<div class="form-group text-center clearfix">
+								<a href="#" class="btn btn-rounded btn-outline-info" ng-click="getUser(user)">
+									Login <i class="ti-arrow-right"></i>
+								</a>
+							</div>	
+						</fieldset>
+					</form>
+
+				</div>
+				<!-- end: LOGIN BOX -->
+				
+			</div>
+			
+			</body>
+			</html>

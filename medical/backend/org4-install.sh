@@ -1,0 +1,3 @@
+
+    echo "Installing smart contract on peer0.org4.example.com"
+    docker exec       -e CORE_PEER_LOCALMSPID=org4MSP       -e CORE_PEER_ADDRESS=peer0.org4.example.com:11051       -e CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.example.com/users/Admin@org4.example.com/msp       -e CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.example.com/peers/peer0.org4.example.com/tls/ca.crt       -e CORE_LEDGER_HISTORY_ENABLEHISTORYDATABASE=true       org4cli       peer chaincode install         -n medical         -v 2         -p "/opt/gopath/src/github.com/chaincode/medical/javascript"         -l "node"
