@@ -1,0 +1,46 @@
+
+      {
+        "name": "first-network-org4",
+        "version": "1.0.0",
+        "client": {
+            "organization": "org4",
+            "connection": {
+                "timeout": {
+                    "peer": {
+                        "endorser": "300"
+                    }
+                }
+            }
+        },
+        "organizations": {
+            "org4": {
+                "mspid": "org4MSP",
+                "peers": [
+                    "peer0.org4.example.com",
+                    "peer1.org4.example.com"
+                ]
+            }
+        },
+        "peers": {
+            "peer0.org4.example.com": {
+                "url": "grpcs://localhost:13051",
+                "tlsCACerts": {
+                    "path": "org4-artifacts/crypto-config/peerOrganizations/org4.example.com/tlsca/tlsca.org4.example.com-cert.pem"
+                },
+                "grpcOptions": {
+                    "ssl-target-name-override": "peer0.org4.example.com"
+                }
+            },
+            "peer1.org4.example.com": {
+                "url": "grpcs://localhost:14051",
+                "tlsCACerts": {
+                    "path": "org4-artifacts/crypto-config/peerOrganizations/org4.example.com/tlsca/tlsca.org4.example.com-cert.pem"
+                },
+                "grpcOptions": {
+                    "ssl-target-name-override": "peer1.org4.example.com"
+                }
+            }
+        }
+    }
+    
+      

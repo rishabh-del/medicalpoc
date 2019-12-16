@@ -13,9 +13,7 @@ var yamlGenerator = require('../../first-network/generateYaml');
 var scriptGenerator = require('../../first-network/generateScript');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-
-
-
+var PdfReader = require('pdfreader').PdfReader;
 
 app.use(bodyParser.json({ limit: '10mb', extended: true }))
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
@@ -72,30 +70,45 @@ app.post('/createMedicalDoc', async (req, res) => {
 app.post('/downloadReport', async (req, res) => {
    var now = new Date();
    var file_name = 'Report_' + now.getTime() + '.pdf'
-   console.log(req.body.file);
+   var file = os.homedir() + '/' + 'medicalpoc/medical/backend' + '/' + file_name;
+
+  
    fs.appendFile(file_name, req.body.file, (err) => {
       if (err) throw err;
 
-      var file = os.homedir() + '/' + 'Blockchain/medicalpoc/medical/backend' + '/' + file_name;
-      console.log(file);
+      //console.log(file);
       res.download(file);
    });
+   fs.readFile(`${file}`, (err, pdfBuffer) => {
+     // pdfBuffer contains the file content
+     console.log("file data");
 
+ new PdfReader().parseBuffer(pdfBuffer, function(err, item){
+    //  console.log(item.getRawTextContent().indexOf(textToVerify));
+      if (err) throw err;
+      console.log(item.text);
+      
+            
+           });
+        });
 
+ 
 
 });
+/**
+ * 
 
-app.get('/addOrg', async (req, res) => {
-   // ./addOrg.sh
-   var req = 'org4';
-   var chaincodeVersion = 2;
-   yamlGenerator.generateCrypto(req);
-   yamlGenerator.generateConfigtx(req);
-   yamlGenerator.generateDockerCompose(req);
-   scriptGenerator.generateInstallOrgScript(req, chaincodeVersion);
-   var query = `
-   cd ../../first-network
-   rm -r ${req}-artifacts
+. org3-crypto.yaml
+. docker-compose-org3.yaml
+. connection-org3.json
+. connection-org3.yaml
+. configtx.yaml
+step1org3.sh
+step2org3.sh
+step3org3.sh
+utils.sh
+
+  rm -r ${req}-artifacts
    rm -r docker-compose-${req}.yaml
    rm -r channel-artifacts/${req}.json
    mkdir ${req}-artifacts
@@ -105,26 +118,145 @@ app.get('/addOrg', async (req, res) => {
    rm -r ../medical/backend/configtx.yaml
    rm -r ../medical/backend/${req}-crypto.yaml
    rm -r ../medical/backend/docker-compose-${req}.yaml
-   chmod u=rwx,g=rx,o=r addOrg.sh
-   ./addOrg.sh ${req}
-   sudo chmod 777 addOrgDocker.sh
-   docker cp addOrgDocker.sh cli:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts
-   
-   docker cp ./channel-artifacts/${req}.json cli:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts/
-   docker exec cli bash ./scripts/addOrgDocker.sh ${req}
-   docker-compose -f docker-compose-${req}.yaml up -d
-   sudo chmod 777 addOrgCli.sh
+ */
+app.post('/addOrg', async (req, res) => {
+   // ./addOrg.sh
+   var org_number = 0;
+   var chaincodeVersion = req.body.chaincodeversion;
+   var port1 = 0;
+   var port2 = 0;
+   var port3 = 0;
+   //var org_name = req;
+   console.log(req.body);
+   var org_name = req.body.orgname;
+   switch (org_name) {
+      case "org3":
+         // code block
+         port1 = 11051;
+         port2 = 12051;
+         port3 = 11052;
+         org_number = 3;
+         break;
+      case "org4":
+         // code block
+         port1 = 13051;
+         port2 = 14051;
+         port3 = 13052;
+         org_number = 4;
+         break;
+      case "org5":
+         // code block
+         port1 = 15051;
+         port2 = 16051;
+         port3 = 15052;
 
-   docker cp addOrgCli.sh ${req}cli:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts
+         org_number = 5;
+         break;
+      case "org6":
+         // code block
+         port1 = 17051;
+         port2 = 18051;
+         port3 = 17052;
+
+         org_number = 6;
+         break;
+      case "org7":
+         // code block
+         port1 = 19051;
+         port2 = 20051;
+         port3 = 19052;
+
+         org_number = 7;
+         break;
+      case "org8":
+         // code block
+         port1 = 21051;
+         port2 = 22051;
+         port3 = 21052;
+
+         org_number = 8;
+         break;
+      case "org9":
+         // code block
+         port1 = 23051;
+         port2 = 24051;
+         port3 = 23052;
+
+         org_number = 9;
+         break;
+      case "org10":
+         // code block
+         port1 = 25051;
+         port2 = 26051;
+         port3 = 25052;
+
+         org_number = 10;
+         break;
+      case "org11":
+         // code block
+         port1 = 27051;
+         port2 = 28051;
+         port3 = 27052;
+
+         org_number = 11;
+         break;
+      case "org12":
+         // code block
+         port1 = 29051;
+         port2 = 30051;
+         port3 = 29052;
+
+         org_number = 12;
+         break;
+      default:
+      // code block
+      port1 = 31051;
+      port2 = 32051;
+      port3 = 31052;
+
+      org_number = 13;
+  
+   }
    
-   docker exec ${req}cli bash ./scripts/addOrgCli.sh
-   chmod u=rwx,g=rx,o=r startFabric.sh
-   ./startFabric.sh ${chaincodeVersion}
+   yamlGenerator.generateCrypto(org_name, port1, port2, port3);
+   yamlGenerator.generateconnectionyaml(org_name, port1, port2, port3);
+   yamlGenerator.generateconnectionjson(org_name, port1, port2, port3);
+   yamlGenerator.generateConfigtx(org_name, port1, port2, port3);
+   yamlGenerator.generateDockerCompose(org_name, port1, port2, port3);
+   //scriptGenerator.generateInstallOrgScript(req, chaincodeVersion);
+
+
+   var query = `
+   cd ../../first-network
+   rm -r ${org_name}-artifacts
+   rm -r docker-compose-${org_name}.yaml
+   rm -r channel-artifacts/${org_name}.json
+   rm -r connection-${org_name}.yaml
+   rm -r connection-${org_name}.json
+   mkdir ${org_name}-artifacts
+   cp ../medical/backend/configtx.yaml ${org_name}-artifacts
+   cp ../medical/backend/${org_name}-crypto.yaml ${org_name}-artifacts
+   cp ../medical/backend/docker-compose-${org_name}.yaml .
+   cp ../medical/backend/connection-${org_name}.yaml .
+   cp ../medical/backend/connection-${org_name}.json .
+   rm -r ../medical/backend/configtx.yaml
+   rm -r ../medical/backend/${org_name}-crypto.yaml
+   rm -r ../medical/backend/docker-compose-${org_name}.yaml
+   rm -r ../medical/backend/connection-${org_name}.yaml
+   rm -r ../medical/backend/connection-${org_name}.json
+
    `;
-
-   var { stdout, stderr } = await exec(query);
-   console.log("exec result : ", stdout, stderr);
-
+console.log(query);
+   await exec(query).then(function (response) {
+      
+      
+      console.log("exec result : ", response.stdout.search("Error"));
+      res.status(200).send("success");
+      
+   }).catch(function(err){
+      throw err;
+   });
+  
 })
 
 function renderFunction(req, res) {
@@ -140,9 +272,6 @@ function renderFunction(req, res) {
 /**
  * Mongo connection
  */
-//var express=require("express"); 
-
-//
 mongoose
    .connect('mongodb+srv://medicalBlock:medPass@cluster0-qq1fv.mongodb.net/test', {
       useUnifiedTopology: true,
@@ -206,7 +335,7 @@ app.post('/signup', function (req, res) {
 
    var da = db.collection('userdata').findOne({ emailID: data.emailID }).then(function (response) {
       console.log("da aaya", response);
-     
+
       if (response != null) {
          console.log("user already exists");
          res.status(401).send("User Already Exists!");
@@ -218,7 +347,7 @@ app.post('/signup', function (req, res) {
             res.status(200).send(collection.ops);
          });
 
-         
+
 
       }
    });

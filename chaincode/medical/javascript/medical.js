@@ -41,7 +41,7 @@ let Chaincode = class {
 
   async queryMeds(stub, args) {
     if (args.length != 1) {
-      throw new Error('Incorrect number of arguments. Expecting reportID ex: CAR01');
+      throw new Error('Incorrect number of arguments. Expecting reportID ex: MED01');
     }
     let reportID = args[0];
 

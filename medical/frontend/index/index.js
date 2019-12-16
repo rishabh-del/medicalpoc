@@ -13,5 +13,20 @@ angular.module('myApp.index', ['ngRoute', 'ngAnimate', 'ui.bootstrap', 'ngResour
    
         $scope.tabPossible = false;
 
-
+        $scope.addOrg = function () {
+           // console.log(user);
+            var orgDetail = {
+                orgname : "org4",
+                chaincodeversion : "3.0"
+            }
+            $http.post('/addOrg',orgDetail).then(function (res) {
+               console.log("add org res", res);
+              // $scope.getResponse = true;
+              
+                  alert("New organization added");
+              
+            }).catch(function (err) {
+                alert(err.data);
+            });
+        }
     }]);

@@ -1,7 +1,7 @@
 var fs = require('fs');
 
 
-var generateConfigtx = (data) => {
+var generateConfigtx = (data, port1) => {
     
     let file = `
     # Copyright IBM Corp. All Rights Reserved.
@@ -48,7 +48,7 @@ var generateConfigtx = (data) => {
                 # for cross org gossip communication.  Note, this value is only
                 # encoded in the genesis block in the Application section context
                 - Host: peer0.${data}.example.com
-                  Port: 11051`;
+                  Port: ${port1}`;
     
                   fs.writeFile("configtx.yaml", file, function(err) {
                     if(err) {
@@ -95,8 +95,105 @@ var generateCrypto = (data) => {
     
     }
 
-var generateDockerCompose = (data) => {
+    var generateconnectionjson = (data, port1, port2) => {
+      let file=`
+      {
+        "name": "first-network-${data}",
+        "version": "1.0.0",
+        "client": {
+            "organization": "${data}",
+            "connection": {
+                "timeout": {
+                    "peer": {
+                        "endorser": "300"
+                    }
+                }
+            }
+        },
+        "organizations": {
+            "${data}": {
+                "mspid": "${data}MSP",
+                "peers": [
+                    "peer0.${data}.example.com",
+                    "peer1.${data}.example.com"
+                ]
+            }
+        },
+        "peers": {
+            "peer0.${data}.example.com": {
+                "url": "grpcs://localhost:${port1}",
+                "tlsCACerts": {
+                    "path": "${data}-artifacts/crypto-config/peerOrganizations/${data}.example.com/tlsca/tlsca.${data}.example.com-cert.pem"
+                },
+                "grpcOptions": {
+                    "ssl-target-name-override": "peer0.${data}.example.com"
+                }
+            },
+            "peer1.${data}.example.com": {
+                "url": "grpcs://localhost:${port2}",
+                "tlsCACerts": {
+                    "path": "${data}-artifacts/crypto-config/peerOrganizations/${data}.example.com/tlsca/tlsca.${data}.example.com-cert.pem"
+                },
+                "grpcOptions": {
+                    "ssl-target-name-override": "peer1.${data}.example.com"
+                }
+            }
+        }
+    }
+    
+      `
 
+      fs.writeFile(`connection-${data}.json`, file, function(err) {
+        if(err) {
+            return console.log(err);
+        }
+    
+        console.log("The file was saved!");
+    });
+    }
+
+    var generateconnectionyaml = (data, port1, port2) => {
+      let file=`
+      name: first-network-${data}
+      version: 1.0.0
+      client:
+        organization: ${data}
+        connection:
+          timeout:
+            peer:
+              endorser: '300'
+      organizations:
+        ${data}:
+          mspid: ${data}MSP
+          peers:
+          - peer0.${data}.example.com
+          - peer1.${data}.example.com
+      peers:
+        peer0.${data}.example.com:
+          url: grpcs://localhost:${port1}
+          tlsCACerts:
+            path: ${data}-artifacts/crypto-config/peerOrganizations/${data}.example.com/tlsca/tlsca.${data}.example.com-cert.pem
+          grpcOptions:
+            ssl-target-name-override: peer0.${data}.example.com
+        peer1.${data}.example.com:
+          url: grpcs://localhost:${port2}
+          tlsCACerts:
+            path: ${data}-artifacts/crypto-config/peerOrganizations/${data}.example.com/tlsca/tlsca.${data}.example.com-cert.pem
+          grpcOptions:
+            ssl-target-name-override: peer1.${data}.example.com
+      `
+
+      fs.writeFile(`connection-${data}.yaml`, file, function(err) {
+        if(err) {
+            return console.log(err);
+        }
+    
+        console.log("The file was saved!");
+    });
+    }
+
+var generateDockerCompose = (data, port1, port2, port3) => {
+let port4 = port3 + 1000;
     let file=`# Copyright IBM Corp. All Rights Reserved.
     #
     # SPDX-License-Identifier: Apache-2.0
@@ -120,12 +217,13 @@ var generateDockerCompose = (data) => {
           service: peer-base
         environment:
           - CORE_PEER_ID=peer0.${data}.example.com
-          - CORE_PEER_ADDRESS=peer0.${data}.example.com:11051
-          - CORE_PEER_LISTENADDRESS=0.0.0.0:11051
-          - CORE_PEER_CHAINCODEADDRESS=peer0.${data}.example.com:11052
-          - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:11052
-          - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.${data}.example.com:12051
-          - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.${data}.example.com:11051
+          - CORE_PEER_ADDRESS=peer0.${data}.example.com:${port1}
+          - CORE_PEER_LISTENADDRESS=0.0.0.0:${port1}
+          - CORE_PEER_CHAINCODEADDRESS=peer0.${data}.example.com:${port3}
+          - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${port3}
+          - CORE_PEER_GOSSIP_ENDPOINT=peer0.${data}.example.com:${port1}
+          - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.${data}.example.com:${port2}
+          - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.${data}.example.com:${port1}
           - CORE_PEER_LOCALMSPID=${data}MSP
         volumes:
             - /var/run/:/host/var/run/
@@ -133,7 +231,7 @@ var generateDockerCompose = (data) => {
             - ./${data}-artifacts/crypto-config/peerOrganizations/${data}.example.com/peers/peer0.${data}.example.com/tls:/etc/hyperledger/fabric/tls
             - peer0.${data}.example.com:/var/hyperledger/production
         ports:
-          - 11051:11051
+          - ${port1}:${port1}
         networks:
           - byfn
     
@@ -144,12 +242,13 @@ var generateDockerCompose = (data) => {
           service: peer-base
         environment:
           - CORE_PEER_ID=peer1.${data}.example.com
-          - CORE_PEER_ADDRESS=peer1.${data}.example.com:12051
-          - CORE_PEER_LISTENADDRESS=0.0.0.0:12051
-          - CORE_PEER_CHAINCODEADDRESS=peer1.${data}.example.com:12052
-          - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:12052
-          - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.${data}.example.com:11051
-          - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.${data}.example.com:12051
+          - CORE_PEER_ADDRESS=peer1.${data}.example.com:${port2}
+          - CORE_PEER_LISTENADDRESS=0.0.0.0:${port2}
+          - CORE_PEER_CHAINCODEADDRESS=peer1.${data}.example.com:${port4}
+          - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:${port4}
+          - CORE_PEER_GOSSIP_ENDPOINT=peer1.${data}.example.com:${port2}
+          - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.${data}.example.com:${port1}
+          - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.${data}.example.com:${port2}
           - CORE_PEER_LOCALMSPID=${data}MSP
         volumes:
             - /var/run/:/host/var/run/
@@ -157,7 +256,7 @@ var generateDockerCompose = (data) => {
             - ./${data}-artifacts/crypto-config/peerOrganizations/${data}.example.com/peers/peer1.${data}.example.com/tls:/etc/hyperledger/fabric/tls
             - peer1.${data}.example.com:/var/hyperledger/production
         ports:
-          - 12051:12051
+          - ${port2}:${port2}
         networks:
           - byfn
     
@@ -174,7 +273,7 @@ var generateDockerCompose = (data) => {
           #- FABRIC_LOGGING_SPEC=INFO
           - FABRIC_LOGGING_SPEC=DEBUG
           - CORE_PEER_ID=${data}cli
-          - CORE_PEER_ADDRESS=peer0.${data}.example.com:11051
+          - CORE_PEER_ADDRESS=peer0.${data}.example.com:${port1}
           - CORE_PEER_LOCALMSPID=${data}MSP
           - CORE_PEER_TLS_ENABLED=true
           - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/${data}.example.com/peers/peer0.${data}.example.com/tls/server.crt
@@ -206,5 +305,5 @@ var generateDockerCompose = (data) => {
     });
 }
 
-module.exports = {generateCrypto, generateConfigtx, generateDockerCompose}
+module.exports = {generateCrypto, generateConfigtx, generateDockerCompose, generateconnectionyaml, generateconnectionjson}
     

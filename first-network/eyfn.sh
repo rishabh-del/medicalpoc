@@ -82,7 +82,7 @@ function clearContainers () {
 # specifically the following images are often left behind:
 # TODO list generated image naming patterns
 function removeUnwantedImages() {
-  DOCKER_IMAGE_IDS=$(docker images|awk '($1 ~ /dev-peer.*.mycc.*/) {print $3}')
+  DOCKER_IMAGE_IDS=$(docker images|awk '($1 ~ /dev-peer.*.medical.*/) {print $3}')
   if [ -z "$DOCKER_IMAGE_IDS" -o "$DOCKER_IMAGE_IDS" == " " ]; then
     echo "---- No images available for deletion ----"
   else
@@ -93,50 +93,50 @@ function removeUnwantedImages() {
 # Generate the needed certificates, the genesis block and start the network.
 function networkUp () {
   # generate artifacts if they don't exist
-  if [ ! -d "org3-artifacts/crypto-config" ]; then
+  if [ ! -d "${ORG_NAME}-artifacts/crypto-config" ]; then
     generateCerts
     generateChannelArtifacts
     createConfigTx
   fi
-  # start org3 peers
+  # start ${ORG_NAME} peers
   if [ "${IF_COUCHDB}" == "couchdb" ]; then
       IMAGE_TAG=${IMAGETAG} docker-compose -f $COMPOSE_FILE_ORG3 -f $COMPOSE_FILE_COUCH_ORG3 up -d 2>&1
   else
-      IMAGE_TAG=$IMAGETAG docker-compose -f $COMPOSE_FILE_ORG3 up -d 2>&1
+      IMAGE_TAG=$IMAGETAG docker-compose -f $COMPOSE_FILE_org up -d 2>&1
   fi
   if [ $? -ne 0 ]; then
-    echo "ERROR !!!! Unable to start Org3 network"
+    echo "ERROR !!!! Unable to start ${ORG_NAME} network"
     exit 1
   fi
   echo
   echo "###############################################################"
-  echo "############### Have Org3 peers join network ##################"
+  echo "############### Have ${ORG_NAME} peers join network ##################"
   echo "###############################################################"
-  docker exec Org3cli ./scripts/step2org3.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT $VERBOSE
+  docker exec ${ORG_NAME}cli ./scripts/step2org3.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT $VERBOSE $ORG_NAME $ORG_NUMBER $CHAINCODE_V
   if [ $? -ne 0 ]; then
-    echo "ERROR !!!! Unable to have Org3 peers join network"
+    echo "ERROR !!!! Unable to have ${ORG_NAME} peers join network"
     exit 1
   fi
   echo
   echo "###############################################################"
-  echo "##### Upgrade chaincode to have Org3 peers on the network #####"
+  echo "##### Upgrade chaincode to have ${ORG_NAME} peers on the network #####"
   echo "###############################################################"
-  docker exec cli ./scripts/step3org3.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT $VERBOSE
+  docker exec cli ./scripts/step3org3.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT $VERBOSE $ORG_NAME $ORG_NUMBER $CHAINCODE_V
   if [ $? -ne 0 ]; then
-    echo "ERROR !!!! Unable to add Org3 peers on network"
+    echo "ERROR !!!! Unable to add ${ORG_NAME} peers on network"
     exit 1
   fi
   # finish by running the test
-  docker exec Org3cli ./scripts/testorg3.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT $VERBOSE
-  if [ $? -ne 0 ]; then
-    echo "ERROR !!!! Unable to run test"
-    exit 1
-  fi
+ # docker exec ${ORG_NAME}cli ./scripts/test${ORG_NAME}.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT $VERBOSE ${ORG_NAME}
+ # if [ $? -ne 0 ]; then
+  #  echo "ERROR !!!! Unable to run test"
+ #   exit 1
+#  fi
 }
 
 # Tear down running network
 function networkDown () {
-  docker-compose -f $COMPOSE_FILE -f $COMPOSE_FILE_KAFKA -f $COMPOSE_FILE_RAFT2 -f $COMPOSE_FILE_ORG3 -f $COMPOSE_FILE_COUCH down --volumes --remove-orphans
+  docker-compose -f $COMPOSE_FILE -f $COMPOSE_FILE_KAFKA -f $COMPOSE_FILE_RAFT2 -f $COMPOSE_FILE_org -f $COMPOSE_FILE_COUCH down --volumes --remove-orphans
   # Don't remove containers, images, etc if restarting
   if [ "$MODE" != "restart" ]; then
     #Cleanup the chaincode containers
@@ -144,20 +144,20 @@ function networkDown () {
     #Cleanup images
     removeUnwantedImages
     # remove orderer block and other channel configuration transactions and certs
-    rm -rf channel-artifacts/*.block channel-artifacts/*.tx crypto-config ./org3-artifacts/crypto-config/ channel-artifacts/org3.json
+    rm -rf channel-artifacts/*.block channel-artifacts/*.tx crypto-config ./${ORG_NAME}-artifacts/crypto-config/ channel-artifacts/${ORG_NAME}.json
     # remove the docker-compose yaml file that was customized to the example
     rm -f docker-compose-e2e.yaml
   fi
 }
 
 # Use the CLI container to create the configuration transaction needed to add
-# Org3 to the network
+# ${ORG_NAME} to the network
 function createConfigTx () {
   echo
   echo "###############################################################"
-  echo "####### Generate and submit config tx to add Org3 #############"
+  echo "####### Generate and submit config tx to add ${ORG_NAME} #############"
   echo "###############################################################"
-  docker exec cli scripts/step1org3.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT $VERBOSE
+  docker exec cli scripts/step1org3.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT $VERBOSE ${ORG_NAME}
   if [ $? -ne 0 ]; then
     echo "ERROR !!!! Unable to create config tx"
     exit 1
@@ -168,7 +168,7 @@ function createConfigTx () {
 # (x509 certs) for the new org.  After we run the tool, the certs will
 # be parked in the BYFN folder titled ``crypto-config``.
 
-# Generates Org3 certs using cryptogen tool
+# Generates ${ORG_NAME} certs using cryptogen tool
 function generateCerts (){
   which cryptogen
   if [ "$?" -ne 0 ]; then
@@ -177,12 +177,12 @@ function generateCerts (){
   fi
   echo
   echo "###############################################################"
-  echo "##### Generate Org3 certificates using cryptogen tool #########"
+  echo "##### Generate ${ORG_NAME} certificates using cryptogen tool #########"
   echo "###############################################################"
 
-  (cd org3-artifacts
+  (cd ${ORG_NAME}-artifacts
    set -x
-   cryptogen generate --config=./org3-crypto.yaml
+   cryptogen generate --config=./${ORG_NAME}-crypto.yaml
    res=$?
    set +x
    if [ $res -ne 0 ]; then
@@ -201,20 +201,20 @@ function generateChannelArtifacts() {
     exit 1
   fi
   echo "##########################################################"
-  echo "#########  Generating Org3 config material ###############"
+  echo "#########  Generating ${ORG_NAME} config material ###############"
   echo "##########################################################"
-  (cd org3-artifacts
+  (cd ${ORG_NAME}-artifacts
    export FABRIC_CFG_PATH=$PWD
    set -x
-   configtxgen -printOrg Org3MSP > ../channel-artifacts/org3.json
+   configtxgen -printOrg ${ORG_NAME}MSP > ../channel-artifacts/${ORG_NAME}.json
    res=$?
    set +x
    if [ $res -ne 0 ]; then
-     echo "Failed to generate Org3 config material..."
+     echo "Failed to generate ${ORG_NAME} config material..."
      exit 1
    fi
   )
-  cp -r crypto-config/ordererOrganizations org3-artifacts/crypto-config/
+  cp -r crypto-config/ordererOrganizations ${ORG_NAME}-artifacts/crypto-config/
   echo
 }
 
@@ -235,6 +235,10 @@ OS_ARCH=$(echo "$(uname -s|tr '[:upper:]' '[:lower:]'|sed 's/mingw64_nt.*/window
 CLI_TIMEOUT=10
 #default for delay
 CLI_DELAY=3
+ORG_NAME=$2
+ORG_NUMBER=$3
+CHAINCODE_V=$4
+echo $ORG_NAME $ORG_NUMBER $CHAINCODE_V
 # channel name defaults to "mychannel"
 CHANNEL_NAME="mychannel"
 # use this as the default docker-compose yaml definition
@@ -242,15 +246,15 @@ COMPOSE_FILE=docker-compose-cli.yaml
 #
 COMPOSE_FILE_COUCH=docker-compose-couch.yaml
 # use this as the default docker-compose yaml definition
-COMPOSE_FILE_ORG3=docker-compose-org3.yaml
+COMPOSE_FILE_org=docker-compose-${ORG_NAME}.yaml
 #
-COMPOSE_FILE_COUCH_ORG3=docker-compose-couch-org3.yaml
+#COMPOSE_FILE_COUCH_org4=docker-compose-couch-org3.yaml
 # kafka and zookeeper compose file
 COMPOSE_FILE_KAFKA=docker-compose-kafka.yaml
 # two additional etcd/raft orderers
 COMPOSE_FILE_RAFT2=docker-compose-etcdraft2.yaml
 # use golang as the default language for chaincode
-LANGUAGE=golang
+LANGUAGE=node
 # default image tag
 IMAGETAG="latest"
 
@@ -258,6 +262,7 @@ IMAGETAG="latest"
 if [ "$1" = "-m" ];then	# supports old usage, muscle memory is powerful!
     shift
 fi
+
 MODE=$1;shift
 # Determine whether starting, stopping, restarting or generating for announce
 if [ "$MODE" == "up" ]; then

@@ -1,12 +1,12 @@
 {
   "name": "medical",
   "version": "1.0.0",
-  "description": "Hyperledger Fabric Car Sample Application",
+  "description": "Hyperledger Fabric Medical Sample Application",
   "main": "medical.js",
   "scripts": {
-    "dev": "cd backend && nodemon app.js",
+    "dev": "cd medical/backend && nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cd backend && nodemon enrollAdmin.js && nodemon registerUser.js",
+    "build": "cd first-network && ./byfn.sh down && ./startFab.sh && cd .. && cd medical/backend && nodemon enrollAdmin.js && nodemon registerUser.js",
     "start": "npm run dev"
   },
   "dependencies": {
@@ -26,7 +26,7 @@
   "keywords": [
     "Hyperledger",
     "Fabric",
-    "Car",
+    "Medical",
     "Sample",
     "Application"
   ],

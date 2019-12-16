@@ -24,9 +24,9 @@ COUNTER=1
 MAX_RETRY=5
 SYS_CHANNEL=$SYS_CHANNEL
 
-CC_SRC_PATH="github.com/chaincode/chaincode_example02/go/"
+CC_SRC_PATH="github.com/chaincode/medical/javascript/"
 if [ "$LANGUAGE" = "node" ]; then
-  CC_SRC_PATH="/opt/gopath/src/github.com/chaincode/chaincode_example02/node/"
+  CC_SRC_PATH="/opt/gopath/src/github.com/chaincode/medical/javascript/"
 fi
 
 echo "System channel name : "$SYS_CHANNEL
@@ -137,19 +137,19 @@ sleep $DELAY
 
 #Query on chaincode on Peer0/Org1
 echo "Querying chaincode on org1/peer0..."
-chaincodeQuery 0 1 90
+#chaincodeQuery 0 1 90
 
 sleep $DELAY
 
 #Invoke on chaincode on Peer0/Org1
-echo "Sending invoke transaction on org1/peer0..."
-chaincodeInvoke 0 1 0 2
+#echo "Sending invoke transaction on org1/peer0..."
+#chaincodeInvoke 0 1 0 2
 
 sleep $DELAY
 
 #Query on chaincode on Peer0/Org1
 echo "Querying chaincode on org1/peer0..."
-chaincodeQuery 0 1 80
+#chaincodeQuery 0 1 80
 
 echo
 echo "===================== All GOOD, End-2-End UPGRADE Scenario execution completed ===================== "

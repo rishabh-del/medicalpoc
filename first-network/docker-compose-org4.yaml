@@ -21,12 +21,13 @@
           service: peer-base
         environment:
           - CORE_PEER_ID=peer0.org4.example.com
-          - CORE_PEER_ADDRESS=peer0.org4.example.com:11051
-          - CORE_PEER_LISTENADDRESS=0.0.0.0:11051
-          - CORE_PEER_CHAINCODEADDRESS=peer0.org4.example.com:11052
-          - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:11052
-          - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org4.example.com:12051
-          - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org4.example.com:11051
+          - CORE_PEER_ADDRESS=peer0.org4.example.com:13051
+          - CORE_PEER_LISTENADDRESS=0.0.0.0:13051
+          - CORE_PEER_CHAINCODEADDRESS=peer0.org4.example.com:13052
+          - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:13052
+          - CORE_PEER_GOSSIP_ENDPOINT=peer0.org4.example.com:13051
+          - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org4.example.com:14051
+          - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org4.example.com:13051
           - CORE_PEER_LOCALMSPID=org4MSP
         volumes:
             - /var/run/:/host/var/run/
@@ -34,7 +35,7 @@
             - ./org4-artifacts/crypto-config/peerOrganizations/org4.example.com/peers/peer0.org4.example.com/tls:/etc/hyperledger/fabric/tls
             - peer0.org4.example.com:/var/hyperledger/production
         ports:
-          - 11051:11051
+          - 13051:13051
         networks:
           - byfn
     
@@ -45,12 +46,13 @@
           service: peer-base
         environment:
           - CORE_PEER_ID=peer1.org4.example.com
-          - CORE_PEER_ADDRESS=peer1.org4.example.com:12051
-          - CORE_PEER_LISTENADDRESS=0.0.0.0:12051
-          - CORE_PEER_CHAINCODEADDRESS=peer1.org4.example.com:12052
-          - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:12052
-          - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org4.example.com:11051
-          - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org4.example.com:12051
+          - CORE_PEER_ADDRESS=peer1.org4.example.com:14051
+          - CORE_PEER_LISTENADDRESS=0.0.0.0:14051
+          - CORE_PEER_CHAINCODEADDRESS=peer1.org4.example.com:14052
+          - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:14052
+          - CORE_PEER_GOSSIP_ENDPOINT=peer1.org4.example.com:14051
+          - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org4.example.com:13051
+          - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org4.example.com:14051
           - CORE_PEER_LOCALMSPID=org4MSP
         volumes:
             - /var/run/:/host/var/run/
@@ -58,7 +60,7 @@
             - ./org4-artifacts/crypto-config/peerOrganizations/org4.example.com/peers/peer1.org4.example.com/tls:/etc/hyperledger/fabric/tls
             - peer1.org4.example.com:/var/hyperledger/production
         ports:
-          - 12051:12051
+          - 14051:14051
         networks:
           - byfn
     
@@ -75,7 +77,7 @@
           #- FABRIC_LOGGING_SPEC=INFO
           - FABRIC_LOGGING_SPEC=DEBUG
           - CORE_PEER_ID=org4cli
-          - CORE_PEER_ADDRESS=peer0.org4.example.com:11051
+          - CORE_PEER_ADDRESS=peer0.org4.example.com:13051
           - CORE_PEER_LOCALMSPID=org4MSP
           - CORE_PEER_TLS_ENABLED=true
           - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.example.com/peers/peer0.org4.example.com/tls/server.crt

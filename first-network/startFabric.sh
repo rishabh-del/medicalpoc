@@ -75,7 +75,7 @@ docker exec \
     -p "$CC_SRC_PATH" \
     -l "$CC_RUNTIME_LANGUAGE"
 
-
+sleep 5
     docker exec \
   -e CORE_PEER_LOCALMSPID=org4MSP \
   -e CORE_PEER_ADDRESS=peer0.org4.example.com:11051 \
