@@ -57,17 +57,17 @@ let Chaincode = class {
     console.info('============= START : Initialize Ledger ===========');
     let meds = [];
     meds.push({
-      name: "abc",
+      name: "Rishabh Pandey",
       age: "25",
-      medicine: "para",
-      file: "file1",
+      medicine: "Paracetamol, Vitamin-D3",
+      file: "data:text/plain;base64,SGVsbG8gUGF0aWVudA==",
       gender: "Male"
     });
     meds.push({
-      name: "abcs",
+      name: "Shivam",
       age: "21",
-      medicine: "param",
-      file: "file2",
+      medicine: "Bitadine",
+      file: "data:text/plain;base64,SGVsbG8gUGF0aWVudA==",
       gender: "Male"
     });
 

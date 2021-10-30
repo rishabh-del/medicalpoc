@@ -13,7 +13,7 @@ var yamlGenerator = require('../../first-network/generateYaml');
 var scriptGenerator = require('../../first-network/generateScript');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-var PdfReader = require('pdfreader').PdfReader;
+//var PdfReader = require('pdfreader').PdfReader;
 
 app.use(bodyParser.json({ limit: '10mb', extended: true }))
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
@@ -55,7 +55,7 @@ app.post('/createMedicalDoc', async (req, res) => {
       file: req.body.file,
       gender: req.body.gender
    }
-
+console.log("data is ", data)
    let response = await queries.createMedicalDoc(data);
    console.log(response.result);
    if (response.result == "Successfully committed the change to the ledger by the peer") {
@@ -83,13 +83,13 @@ app.post('/downloadReport', async (req, res) => {
      // pdfBuffer contains the file content
      console.log("file data");
 
- new PdfReader().parseBuffer(pdfBuffer, function(err, item){
-    //  console.log(item.getRawTextContent().indexOf(textToVerify));
-      if (err) throw err;
-      console.log(item.text);
+//  new PdfReader().parseBuffer(pdfBuffer, function(err, item){
+//     //  console.log(item.getRawTextContent().indexOf(textToVerify));
+//       if (err) throw err;
+//       console.log(item.text);
       
             
-           });
+//            });
         });
 
  
@@ -273,7 +273,7 @@ function renderFunction(req, res) {
  * Mongo connection
  */
 mongoose
-   .connect('mongodb+srv://medicalBlock:medPass@cluster0-qq1fv.mongodb.net/test', {
+   .connect('mongodb+srv://admin:admin@cluster0.xubr9.mongodb.net/test', {
       useUnifiedTopology: true,
       useNewUrlParser: true,
    })

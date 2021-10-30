@@ -56,7 +56,7 @@ async function invoke(data) {
 
 		// get the enrolled user from persistence and assign to the client instance
 		//    this user will sign all requests for the fabric network
-		const user = await fabric_client.getUserContext('user1', true);
+		const user = await fabric_client.getUserContext('admin', true);
 		if (user && user.isEnrolled()) {
 			console.log('Successfully loaded "user1" from user store');
 		} else {
