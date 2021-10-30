@@ -35,7 +35,11 @@ For Linux
 
 go to first-network folder
 do ./startFab.sh
+do docker ps -a to check the containers
+do docker logs -f containerid to check the logs of the containers
+
 This will start the network, install the chaincode, instantiate the chaincode
+
 Go to mediacl/backend/hfc-keystore and empty the folder
 Go to medical/backend
 Do node enrolladmin.js
@@ -46,3 +50,9 @@ Run localhost:3000 on web browser
 signup to account
 login
 check the data for MED0 Patient
+
+For Windows 
+
+use 'wsl ./startFab.sh'
+
+rest all the commands will be same
