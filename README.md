@@ -6,9 +6,7 @@ Health Care Blockchain
 05.12.2019
 ─
 Rishabh Pandey
-https://www.writerinformation.com/
-Writer House
-Mumbai, PIN 400059
+
 Overview
 A HealthCare based blockchain application implemented on HyperLedger Fabric with effective patient diagnosis monitoring and highly available information for all the stakeholders involved.
 Goals
