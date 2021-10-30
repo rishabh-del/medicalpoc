@@ -27,3 +27,22 @@ The Pharmacist and Manufacturer can view the details of the patient and download
 Milestones
     I. Release 1(POC)
 We Successfully built a demo to showcase the capabilities of the system. 
+
+
+Execution Steps
+
+For Linux
+
+go to first-network folder
+do ./startFab.sh
+This will start the network, install the chaincode, instantiate the chaincode
+Go to mediacl/backend/hfc-keystore and empty the folder
+Go to medical/backend
+Do node enrolladmin.js
+do node registeruser.js
+do node app.js
+
+Run localhost:3000 on web browser
+signup to account
+login
+check the data for MED0 Patient
